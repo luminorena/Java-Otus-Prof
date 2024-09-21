@@ -1,6 +1,5 @@
 package ru.otus;
 
-
 import ru.otus.annotations.AfterSuite;
 import ru.otus.annotations.BeforeSuite;
 import ru.otus.annotations.Disabled;
@@ -10,7 +9,9 @@ import ru.otus.util.CustomException;
 public class ComparatorTests {
 
     @Disabled("This test class is disabled")
-    public static class TestClass {}
+    public static class TestClass {
+    }
+
     Comparator comparator = new Comparator();
 
     @BeforeSuite
@@ -34,7 +35,7 @@ public class ComparatorTests {
     }
 
 
-    @Test(priority = 2)
+    @Test(priority = 1)
     public void lessTest() throws CustomException {
         int a = 9;
         int b = 16;

@@ -1,13 +1,14 @@
 package ru.otus.util;
 
-import com.google.common.collect.ListMultimap;
 import ru.otus.ComparatorTests;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class TestRunner {
     protected ArrayList<Method> beforeSuiteList = new ArrayList<>();
@@ -48,23 +49,9 @@ public class TestRunner {
 
     public void run(Class<?> testRunner) throws Exception {
         final var constructor = testRunner.getConstructor();
-        ListMultimap<Integer, Method> integerMethodMap = AnnotationPriority.validatePriority(testRunner);
-
-        Map<Integer, Method> reversedMap = integerMethodMap.entries()
-                .stream()
-                .sorted(Map.Entry.<Integer, Method>comparingByKey().reversed())
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (e, n) -> n,
-                        LinkedHashMap::new
-                ));
-
-
-
-        Iterator<Map.Entry<Integer, Method>> iterator = reversedMap.entrySet().iterator();
-
-        int totalTests = reversedMap.size();
+        List<Map.Entry<Integer, Method>> integerMethodMap = AnnotationPriority.validatePriority(testRunner);
+        Iterator<Map.Entry<Integer, Method>> iterator = integerMethodMap.iterator();
+        int totalTests = integerMethodMap.size();
         while (iterator.hasNext()) {
             Map.Entry<Integer, Method> entry = iterator.next();
             if (disabledList.contains(entry.getValue())) {
@@ -74,8 +61,8 @@ public class TestRunner {
             }
         }
 
-        for (Map.Entry<Integer, Method> entry : reversedMap.entrySet()) {
-            Method method = entry.getValue(); // Get the single Method object
+        for (Map.Entry<Integer, Method> entry : integerMethodMap) {
+            Method method = entry.getValue();
             if (disabledList.contains(method)) {
                 System.out.println("Test " + method.getName() + " is disabled");
                 disabledMethods++;
@@ -109,7 +96,6 @@ public class TestRunner {
                 }
             }
         }
-
 
 
         System.out.printf("Total classes: %d, Passed: %d, Failed: %d, Disabled methods: %d, Disabled classes: %d%n",

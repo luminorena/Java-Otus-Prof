@@ -5,9 +5,12 @@ import com.google.common.collect.ListMultimap;
 import ru.otus.annotations.Test;
 
 import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class AnnotationPriority {
-    protected static ListMultimap<Integer, Method> validatePriority(Class testClass) {
+    protected static List<Map.Entry<Integer, Method>> validatePriority(Class testClass) {
         ListMultimap<Integer, Method> priorityMap = ArrayListMultimap.create();
         int priority = 0;
         for (Method method : testClass.getDeclaredMethods()) {
@@ -18,22 +21,12 @@ public class AnnotationPriority {
                     throw new IllegalArgumentException("Priority must be between 1 and 10");
                 } else priorityMap.put(priority, method);
             }
-
         }
 
-//        List<Map.Entry<Integer, Method>> sortedList = priorityMap.entries()
-//                .stream()
-//                .sorted(Map.Entry.<Integer, Method>comparingByKey().reversed())
-//                .collect(Collectors.toList());
-//
-//        ListMultimap<Integer, Method> listMultimap = ArrayListMultimap.create();
-//
-//        for (Map.Entry<Integer, Method> entry : sortedList) {
-//            listMultimap.put(entry.getKey(), entry.getValue());
-//        }
-
-
-        return priorityMap;
+        return priorityMap.entries()
+                .stream()
+                .sorted(Map.Entry.<Integer, Method>comparingByKey().reversed())
+                .collect(Collectors.toList());
     }
 }
 
