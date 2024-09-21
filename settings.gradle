@@ -1,2 +1,4 @@
 rootProject.name = 'Java-Otus-Prof'
+include 'hw_1_Annotations'
+include 'hw_1_annotations'
 
