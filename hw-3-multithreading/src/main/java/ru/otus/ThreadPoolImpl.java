@@ -1,13 +1,18 @@
 package ru.otus;
 
-import java.util.concurrent.ArrayBlockingQueue;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class ThreadPoolImpl {
-    private final ArrayBlockingQueue<Runnable> taskQueue;
-    private boolean isFinished;
+    private final List<Runnable> taskQueue;
+    private final int maxThreadSize;
+    private volatile boolean isFinished;
+    private final Object lock = new Object();
 
     protected ThreadPoolImpl(int threadCount) {
-        taskQueue = new ArrayBlockingQueue<>(threadCount);
+        taskQueue = new ArrayList<>(threadCount);
+        maxThreadSize = threadCount;
         isFinished = false;
         for (int i = 0; i < threadCount; i++) {
             new Thread(new Executor()).start();
@@ -20,28 +25,47 @@ public class ThreadPoolImpl {
                     "and cannot accept new tasks");
         }
 
-        if (!taskQueue.offer(r)) {
-            throw new IllegalStateException("Task queue is full " +
-                    "and cannot accept new tasks");
+        synchronized (lock) {
+
+            if (taskQueue.size() >= maxThreadSize) {
+                throw new IllegalStateException("Task queue is full " +
+                        "and cannot accept new tasks");
+            }
+            taskQueue.add(r);
+            lock.notify();
         }
     }
 
     protected void shutdown() {
         isFinished = true;
+        synchronized (lock) {
+            lock.notifyAll();
+        }
     }
 
     private class Executor implements Runnable {
         @Override
         public void run() {
-            while (!isFinished || !taskQueue.isEmpty()) {
-                try {
-                    Runnable task = taskQueue.take();
-                    task.run();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    Thread.currentThread().interrupt();
+            Runnable task = null;
+            synchronized (lock) {
+                while (!isFinished || !taskQueue.isEmpty()) {
+                    try {
+                        lock.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    if (!taskQueue.isEmpty()) {
+                        task = taskQueue.remove(0);
+                    }
                 }
             }
+            try {
+                task.run();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
         }
     }
 }
