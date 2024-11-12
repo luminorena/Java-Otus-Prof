@@ -1,11 +1,12 @@
 package ru.otus;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class ItemService {
     ItemsDao itemsDao = new ItemsDao();
 
-    public void addNewItems() {
+    protected void addNewItems() throws SQLException {
         for (int i = 1; i <= 100; i++) {
             Item newItem = new Item(i, "test" + i, i * 100);
             itemsDao.createItem(newItem);
@@ -14,7 +15,7 @@ public class ItemService {
     }
 
 
-    public void getItemsWithIncreasedPrice() {
+    protected void getItemsWithIncreasedPrice() throws SQLException {
         List<Item> items = itemsDao.getAllItems();
         for (Item item : items) {
             Item updatedItem = new Item(item.getId(),

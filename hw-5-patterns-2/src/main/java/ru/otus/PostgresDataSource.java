@@ -9,16 +9,16 @@ import java.util.Properties;
 
 public class PostgresDataSource {
     private static PostgresDataSource instance;
-    private Connection connection;
+    private final ThreadLocal<Connection> connection = new ThreadLocal<>();
 
-    private PostgresDataSource() {
+    PostgresDataSource() {
         try {
             Properties props = new Properties();
             props.load(new FileInputStream("credentials.properties"));
             String user = props.getProperty("user");
             String password = props.getProperty("password");
             String databaseUrl = props.getProperty("databaseUrl");
-            connection = DriverManager.getConnection(databaseUrl, user, password);
+            connection.set(DriverManager.getConnection(databaseUrl, user, password));
         } catch (IOException | SQLException e) {
             e.printStackTrace();
         }
@@ -32,13 +32,15 @@ public class PostgresDataSource {
     }
 
     public Connection getConnection() {
-        return connection;
+        return connection.get();
     }
 
     public void closeConnection() {
-        if (connection != null) {
+        Connection conn = connection.get();
+        if (conn != null) {
             try {
-                connection.close();
+                conn.close();
+                connection.remove();
             } catch (SQLException e) {
                 e.printStackTrace();
             }

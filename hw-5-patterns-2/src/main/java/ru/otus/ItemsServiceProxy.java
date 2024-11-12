@@ -7,17 +7,17 @@ public class ItemsServiceProxy {
     ItemService itemService = new ItemService();
     Connection connection = null;
 
-    public void addNewItemsTran() {
+    protected void addNewItemsTran() {
         try {
-            connection = PostgresDataSource.getInstance().getConnection();
-            connection.setAutoCommit(false);
+            this.connection = PostgresDataSource.getInstance().getConnection();
+            this.connection.setAutoCommit(false);
             itemService.addNewItems();
-            connection.setAutoCommit(true);
+            this.connection.setAutoCommit(true);
         } catch (SQLException e) {
             e.printStackTrace();
             try {
-                if (connection != null) {
-                    connection.rollback();
+                if (this.connection != null) {
+                    this.connection.rollback();
                 }
             } catch (SQLException r) {
                 r.printStackTrace();
@@ -27,7 +27,7 @@ public class ItemsServiceProxy {
         }
     }
 
-    public void increasePriceAndUpdateTran() {
+    protected void increasePriceAndUpdateTran() {
         try {
             connection = PostgresDataSource.getInstance().getConnection();
             connection.setAutoCommit(false);
