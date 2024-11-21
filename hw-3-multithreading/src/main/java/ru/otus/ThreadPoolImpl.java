@@ -6,13 +6,11 @@ import java.util.List;
 
 public class ThreadPoolImpl {
     private final List<Runnable> taskQueue;
-    private final int maxThreadSize;
     private volatile boolean isFinished;
     private final Object lock = new Object();
 
     protected ThreadPoolImpl(int threadCount) {
         taskQueue = new ArrayList<>(threadCount);
-        maxThreadSize = threadCount;
         isFinished = false;
         for (int i = 0; i < threadCount; i++) {
             new Thread(new Executor()).start();
@@ -26,11 +24,6 @@ public class ThreadPoolImpl {
         }
 
         synchronized (lock) {
-
-            if (taskQueue.size() >= maxThreadSize) {
-                throw new IllegalStateException("Task queue is full " +
-                        "and cannot accept new tasks");
-            }
             taskQueue.add(r);
             lock.notify();
         }
