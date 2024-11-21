@@ -41,13 +41,13 @@ final class Box {
         List<String> commaFree = new ArrayList<>();
 
         for (int i = 0; i < COUNTCOLORS; i++) {
-            colors.add("\"" + color1.getColor(0) + i + "\"");
-            colors.add("\"" + color2.getColor(1) + i + "\"");
-            colors.add("\"" + color3.getColor(2) + i + "\"");
-            colors.add("\"" + color4.getColor(3) + i + "\"");
+            colors.add("\"" + color1.getColor(0) + i + "\",");
+            colors.add("\"" + color2.getColor(1) + i + "\",");
+            colors.add("\"" + color3.getColor(2) + i + "\",");
+            colors.add("\"" + color4.getColor(3) + i + "\",");
+            commaFree.add(colors.get(i));
         }
-        String commaSeparated = String.join(", ", colors);
-        commaFree.add(commaSeparated);
+
         return commaFree.iterator();
     }
 
@@ -56,21 +56,23 @@ final class Box {
         List<String> commaFree = new ArrayList<>();
 
         for (int i = 0; i < COUNTCOLORS; i++) {
-            colors.add("\"" + color1.getColor(0) + i + "\"");
+            colors.add("\"" + color1.getColor(0) + i + "\",");
+            commaFree.add(colors.get(i));
         }
         for (int i = 0; i < COUNTCOLORS; i++) {
-            colors.add("\"" + color2.getColor(1) + i + "\"");
+            colors.add("\"" + color2.getColor(1) + i + "\",");
+            commaFree.add(colors.get(i));
         }
         for (int i = 0; i < COUNTCOLORS; i++) {
-            colors.add("\"" + color3.getColor(2) + i + "\"");
+            colors.add("\"" + color3.getColor(2) + i + "\",");
+            commaFree.add(colors.get(i));
         }
 
         for (int i = 0; i < COUNTCOLORS; i++) {
-            colors.add("\"" + color4.getColor(3) + i + "\"");
+            colors.add("\"" + color4.getColor(3) + i + "\",");
+            commaFree.add(colors.get(i));
         }
 
-        String commaSeparated = String.join(", ", colors);
-        commaFree.add(commaSeparated);
         return commaFree.iterator();
     }
 }

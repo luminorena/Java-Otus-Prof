@@ -18,9 +18,7 @@ public class Main {
         while (firstIterator.hasNext()) {
             System.out.print(firstIterator.next());
         }
-
-        System.out.println();
-
+        System.out.println("\n -----------------------------------------");
         while (secondIterator.hasNext()) {
             System.out.print(secondIterator.next());
         }
