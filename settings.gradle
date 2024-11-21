@@ -1,2 +1,3 @@
 rootProject.name = 'Java-Otus-Prof'
+include 'hw-6-java-jdbc'
 
