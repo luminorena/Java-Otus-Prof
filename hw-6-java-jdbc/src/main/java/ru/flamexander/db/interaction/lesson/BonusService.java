@@ -1,27 +1,29 @@
 package ru.flamexander.db.interaction.lesson;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
+import ru.flamexander.db.interaction.hometask.DbMigrator;
+
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 public class BonusService {
     private DataSource dataSource;
+    private DbMigrator dbMigrator;
 
-    public BonusService(DataSource dataSource) {
+    public BonusService(DataSource dataSource, DbMigrator dbMigrator) {
         this.dataSource = dataSource;
+        this.dbMigrator = dbMigrator;
     }
 
     public void init() throws SQLException {
+//        int query = dataSource.getStatement().executeUpdate(
+//                dbMigrator.migrate("dbinit.sql"));
+//        ResultSet resultSet = dataSource
+//                .getStatement()
+//                .executeQuery(String.valueOf(query));
+//        resultSet.close();
         dataSource.getStatement().executeUpdate(
-                "" +
-                        "create table if not exists bonuses (" +
-                        "    id          bigserial primary key," +
-                        "    amount      int," +
-                        "    login       varchar(255)" +
-                        ")"
-        );
-        System.out.println("Сервис бонусов успешно запущен");
+                dbMigrator.migrate("dbinit.sql"));
+
     }
 
     public void createBonus(String login, int amount) {

@@ -4,8 +4,9 @@ package ru.flamexander.db.interaction.lesson;
 public class User {
     @RepositoryIdField
     private Long id;
-    @RepositoryField
-    private String login;
+    @RepositoryField("login")
+    // loginParam not works
+    private String loginParam;
     @RepositoryField
     private String password;
     @RepositoryField
@@ -19,12 +20,12 @@ public class User {
         this.id = id;
     }
 
-    public String getLogin() {
-        return login;
+    public String getLoginParam() {
+        return loginParam;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setLoginParam(String loginParam) {
+        this.loginParam = loginParam;
     }
 
     public String getPassword() {
@@ -46,9 +47,9 @@ public class User {
     public User() {
     }
 
-    public User(Long id, String login, String password, String nickname) {
+    public User(Long id, String loginParam, String password, String nickname) {
         this.id = id;
-        this.login = login;
+        this.loginParam = loginParam;
         this.password = password;
         this.nickname = nickname;
     }
@@ -57,7 +58,7 @@ public class User {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", login='" + login + '\'' +
+                ", login='" + loginParam + '\'' +
                 ", password='" + password + '\'' +
                 ", nickname='" + nickname + '\'' +
                 '}';
