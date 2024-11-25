@@ -1,2 +1,2 @@
-create table public.users (id bigserial primary key, login varchar(255), password varchar(255), nickname varchar(255));
+create table public.user (id bigserial primary key, login varchar(255), password varchar(255), nickname varchar(255));
 create table public.bonuses (id bigserial primary key, amount varchar(255), login int);

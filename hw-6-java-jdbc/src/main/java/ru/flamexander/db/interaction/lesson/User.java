@@ -5,7 +5,6 @@ public class User {
     @RepositoryIdField
     private Long id;
     @RepositoryField("login")
-    // loginParam not works
     private String loginParam;
     @RepositoryField
     private String password;

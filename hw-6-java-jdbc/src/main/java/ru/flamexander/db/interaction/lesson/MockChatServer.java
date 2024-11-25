@@ -14,21 +14,21 @@ public class MockChatServer {
 
             UsersDao usersDao = new UsersDao(dataSource, new DbMigrator(dataSource));
             usersDao.init();
+            // вставка данных
             usersDao.save(new User(null, "A", "A", "A"));
-          //  System.out.println(usersDao.getAllUsers());
-            AbstractRepository<User> usersRepository = new AbstractRepository<>(dataSource, User.class);
+            AbstractRepository<User> usersRepository = new AbstractRepository<User>(dataSource, User.class);
             usersRepository.save(new User(null, "B", "B", "B"));
-            usersRepository.findById(1, User.class);
+            System.out.println(usersDao.getAllUsers());
+            // обновление данных
+            usersRepository.updateRecord("C!", "C!", "C!", 115L);
+            // поиск одной записи
+            usersRepository.printOneRecord(115L);
+            // поиск всех записей
+            usersRepository.printAllData();
+            // удаление одной записи
+            usersRepository.deleteOneRecord(114L);
 
-          //  System.out.println(usersDao.getAllUsers());
-
-//            AuthenticationService authenticationService = new AuthenticationService(usersDao);
-//            UsersStatisticService usersStatisticService = new UsersStatisticService(usersDao);
-//            BonusService bonusService = new BonusService(dataSource);
-//            bonusService.init();
-
-//            authenticationService.register("A", "A", "A");
-            // Основная работа сервера чата
+            System.out.println(usersDao.getAllUsers());
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
