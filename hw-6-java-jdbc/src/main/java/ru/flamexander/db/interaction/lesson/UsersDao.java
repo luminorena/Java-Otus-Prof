@@ -1,5 +1,7 @@
 package ru.flamexander.db.interaction.lesson;
 
+import ru.flamexander.db.interaction.hometask.DbMigrator;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -9,21 +11,22 @@ import java.util.Optional;
 
 public class UsersDao {
     private DataSource dataSource;
-
-    public UsersDao(DataSource dataSource) {
+    private DbMigrator dbMigrator;
+    public UsersDao(DataSource dataSource, DbMigrator dbMigrator) {
         this.dataSource = dataSource;
+        this.dbMigrator = dbMigrator;
     }
 
     public void init() throws SQLException {
-        dataSource.getStatement().executeUpdate(
-                "" +
-                        "create table if not exists users (" +
-                        "    id          bigserial primary key," +
-                        "    login       varchar(255)," +
-                        "    password    varchar(255)," +
-                        "    nickname    varchar(255)" +
-                        ")"
-        );
+        try {
+            dataSource.getStatement().executeUpdate(
+                    dbMigrator.migrate("dbinit.sql"));
+            dbMigrator.flywayImitator("dbinit.sql");
+        } catch (SQLException e) {
+            e.printStackTrace();
+           // throw new ORMException("Проверьте правильность создания таблиц и полей");
+        }
+
     }
 
     public Optional<User> getUserByLoginAndPassword(String login, String password) {
@@ -59,13 +62,13 @@ public class UsersDao {
     }
 
     public void save(User user) throws SQLException {
-        dataSource.getStatement().executeUpdate(String.format("insert into users (login, password, nickname) values ('%s', '%s', '%s');", user.getLogin(), user.getPassword(), user.getNickname()));
+        dataSource.getStatement().executeUpdate(String.format("insert into users (login, password, nickname) values ('%s', '%s', '%s');", user.getLoginParam(), user.getPassword(), user.getNickname()));
     }
 
     public void saveAll(List<User> users) throws SQLException {
         dataSource.getConnection().setAutoCommit(false);
         for (User u : users) {
-            dataSource.getStatement().executeUpdate(String.format("insert into users (login, password, nickname) values ('%s', '%s', '%s');", u.getLogin(), u.getPassword(), u.getNickname()));
+            dataSource.getStatement().executeUpdate(String.format("insert into users (login, password, nickname) values ('%s', '%s', '%s');", u.getLoginParam(), u.getPassword(), u.getNickname()));
         }
         dataSource.getConnection().setAutoCommit(true);
     }
