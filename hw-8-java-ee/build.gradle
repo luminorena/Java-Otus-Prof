@@ -1,0 +1,69 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id 'war'
+    id("com.bmuschko.tomcat") version "2.7.0"
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven {
+        url = uri('https://repo.maven.apache.org/maven2/')
+    }
+}
+
+dependencies {
+    implementation 'org.slf4j:slf4j-api:1.7.25'
+    implementation 'ch.qos.logback:logback-classic:1.1.7'
+    compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
+
+
+    tomcat "org.apache.tomcat.embed:tomcat-embed-core:9.0.97",
+            "org.apache.tomcat.embed:tomcat-embed-logging-juli:9.0.0.M6",
+            "org.apache.tomcat.embed:tomcat-embed-jasper:9.0.97"
+}
+tomcat {
+    httpProtocol = 'org.apache.coyote.http11.Http11Nio2Protocol'
+    ajpProtocol  = 'org.apache.coyote.ajp.AjpNio2Protocol'
+
+    httpPort = 8080
+    contextPath = '/calc'
+
+    users {
+        user {
+            username = 'admin'
+            password = 'admin'
+            roles = ['manager-gui', 'manager-script']
+        }
+    }
+}
+
+
+
+group = 'ru.otus'
+version = '1.0'
+description = 'Calc WebApp'
+java.sourceCompatibility = JavaVersion.VERSION_11
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from(components.java)
+        }
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+
+war {
+    archiveFileName = 'calc.war'
+    destinationDirectory = file("$buildDir/libs")
+
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
