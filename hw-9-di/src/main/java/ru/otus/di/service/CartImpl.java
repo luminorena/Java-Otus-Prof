@@ -20,8 +20,12 @@ public class CartImpl implements Cart {
 
     @Override
     public void addOneProduct(Product product) {
-        products.add(product);
-        System.out.println("В корзину был добавлен продукт: " + product);
+        if (product != null) {
+            products.add(product);
+            System.out.println("В корзину был добавлен продукт: " + product);
+        } else {
+            System.out.println("Продукт не найден.");
+        }
     }
 
     @Override
