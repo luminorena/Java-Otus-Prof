@@ -1,4 +1,4 @@
-create table CART (
+create table ITEMS (
     id bigserial primary key,
     price decimal(16,4),
     discount decimal(16,4),
