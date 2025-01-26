@@ -2,6 +2,7 @@ package ru.otus.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.otus.dtos.CartDTO;
 import ru.otus.entities.Cart;
 import ru.otus.repositories.CartRepository;
 
@@ -11,7 +12,7 @@ import java.util.Optional;
 @Service
 public class CartService {
 
-    private CartRepository cartRepository;
+    private final CartRepository cartRepository;
 
     @Autowired
     public CartService(CartRepository cartRepository) {
@@ -26,11 +27,16 @@ public class CartService {
        return cartRepository.findById(id);
     }
 
-    public Cart createNewItemInCart(Cart cart){
+    public Cart createNewItemInCart(CartDTO cartDTO){
+        Cart cart = new Cart(null, cartDTO.price(), cartDTO.discount(),
+                cartDTO.shortName(), cartDTO.description());
         return cartRepository.save(cart);
+
     }
 
-    public Cart updateItemInCart(Cart cart) {
+    public Cart updateItemInCart(CartDTO cartDTO) {
+        Cart cart = new Cart(cartDTO.id(), cartDTO.price(), cartDTO.discount(),
+                cartDTO.shortName(), cartDTO.description());
         return cartRepository.save(cart);
     }
 

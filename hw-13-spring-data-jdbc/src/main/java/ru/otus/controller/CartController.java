@@ -1,12 +1,11 @@
 package ru.otus.controller;
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.otus.dtos.CartDTO;
 import ru.otus.entities.Cart;
 import ru.otus.service.CartService;
 
@@ -15,7 +14,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/cart")
 public class CartController {
-    private static final Logger logger = LoggerFactory.getLogger(CartController.class);
 
     private CartService cartService;
 
@@ -37,27 +35,16 @@ public class CartController {
         } else {
             return new ResponseEntity<>(cartService.getCartById(id), HttpStatus.OK);
         }
-
     }
 
     @PostMapping(value = "/create_item", produces = "application/json")
-    public ResponseEntity<Object> createItemInCart(@RequestBody Cart cart){
-        Cart newCart = new Cart();
-        newCart.setPrice(cart.getPrice());
-        newCart.setDiscount(cart.getDiscount());
-        newCart.setShortName(cart.getShortName());
-        newCart.setDescription(cart.getDescription());
-        return new ResponseEntity<>(cartService.createNewItemInCart(newCart), HttpStatus.CREATED);
+    public ResponseEntity<Object> createItemInCart(@RequestBody CartDTO cartDTO){
+        return new ResponseEntity<>(cartService.createNewItemInCart(cartDTO), HttpStatus.CREATED);
     }
 
     @PostMapping(value = "/update/item", produces = "application/json")
-    public ResponseEntity<Object> updateItemInCart(Cart cart){
-        cart.getPrice();
-        cart.getDiscount();
-        cart.getShortName();
-        cart.getDescription();
-        return new ResponseEntity<>(cartService.updateItemInCart(cart), HttpStatus.NO_CONTENT);
-
+    public ResponseEntity<Object> updateItemInCart(@RequestBody CartDTO cartDTO){
+        return new ResponseEntity<>(cartService.updateItemInCart(cartDTO), HttpStatus.NO_CONTENT);
     }
 
     @PostMapping(value = "/delete/item/{id}", produces = "application/json")
